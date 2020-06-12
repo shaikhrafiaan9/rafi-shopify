@@ -1,0 +1,42 @@
+{% extends "store/main.html" %}
+{% load static %}
+
+{% block content %}
+
+<br><br>
+<div class="w3-container w3-center w3-hide-medium w3-hide-small" style="font-family:Arial, Helvetica, sans-serif;font-size:19px" >
+
+  <div class=" w3-card-4 w3-content w3-flex" style="max-height:80%;width:400px;">
+    <img src="{{product_detail.imageURL}}" alt="placeholder" style="width:100%;height300px;">
+  </div>
+  <div class="w3-content w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-black w3-mobile" style="max-height:80%;width:400px;max-width:400px;">
+    <h2><strong>{{product_detail.club}}</strong></h2>
+    <h5><strong>{{product_detail.year}}</strong></h5>
+    <h3><strong>{{product_detail.name}}</strong></h3>
+    <p>{{product_detail.description}}</p>
+  </div>
+  <div class="w3-container w3-mobile">
+    <a href="{% url 'store:store' %}" class="w3-mobile w3-btn w3-block w3-round-large w3-text-white w3-margin-top w3-hover w3-hover-text-cyan"
+      style="background-color:#1877f2; width:25%;margin:0 auto;">&#x2190; Back</a>
+  </div>
+</div>
+
+
+<div class="w3-container w3-center w3-hide-large" style="margin-top:350px;margin-bottom:400px;font-family:Arial, Helvetica, sans-serif;font-size:19px">
+  <div class=" w3-card-4 w3-content w3-flex" style="max-height:80%;width:500px;">
+    <img src="{{product_detail.imageURL}}" alt="placeholder" style="width:100%;height300px;">
+  </div>
+  <div class="w3-content w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-black w3-mobile" style="max-height:80%;width:500px;max-width:500px;">
+    <h2><strong>{{product_detail.club}}</strong></h2>
+    <h5><strong>{{product_detail.year}}</strong></h5>
+    <h3><strong>{{product_detail.name}}</strong></h3>
+    <p>{{product_detail.description}}</p>
+  </div>
+  <div class="w3-container w3-mobile">
+    <a href="{% url 'store:store' %}" class="w3-mobile w3-btn w3-block w3-round-large w3-text-white w3-margin-top w3-hover w3-hover-text-cyan"
+      style="background-color:#1877f2; width:25%;margin:0 auto;font-family:Arial, Helvetica, sans-serif;font-size:19px">&#x2190; Back</a>
+  </div>
+</div>
+
+{% include 'store/footer.html' %}
+{% endblock %}

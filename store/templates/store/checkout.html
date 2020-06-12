@@ -1,0 +1,227 @@
+{% extends "store/main.html" %}
+{% load static %}
+
+{% block content %}
+
+  <div class="w3-row-padding w3-container w3-mobile"
+  style="max-height:600px;margin-top:100px;font-family:Arial, Helvetica, sans-serif;font-size:19px">
+
+    <div class="w3-half w3-container w3-card-4 w3-round-large w3-mobile" >
+      <form class="w3-container w3-margin" id="form">
+        {% csrf_token %}
+        <div  id="user-info-hd" class="w3-container w3-margin-bottom w3-center w3-mobile" style="background-color:#1877f2">
+          <h2 class="w3-text-white">Personal Info</h2>
+        </div>
+        <div id="user-info" class="w3-mobile">
+          <div class="form-field w3-mobile">
+            <input type="text" name="name" placeholder="Name.." class="w3-input">
+          </div>
+          <div class="form-field w3-mobile">
+            <input type="email" name="email" placeholder="Email..." class="w3-input">
+          </div>
+        </div>
+        <br>
+        <div id="shipping-info" class="w3-mobile">
+          <h2><strong>Shipping Info</strong></h2>
+          <div class="form-field w3-mobile">
+            <input type="text" name="address" placeholder="Address.." class="w3-input">
+          </div>
+          <div class="form-field w3-mobile">
+            <input type="text" name="city" placeholder="City.." class="w3-input">
+          </div>
+          <div class="form-field w3-mobile">
+            <input type="text" name="state" placeholder="State.." class="w3-input">
+          </div>
+          <div class="form-field w3-mobile">
+            <input type="text" name="pincode" placeholder="Pincode.." class="w3-input">
+          </div>
+          <div class="form-field w3-mobile">
+            <input type="text" name="country" placeholder="Country.." class="w3-input">
+          </div>
+        </div>
+        <div class="but w3-margin w3-mobile">
+          <input type="submit"  value="Submit" class="w3-bar w3-text-white w3-btn w3-round-large w3-hover w3-hover-text-cyan"
+          style="background-color:#1877f2" id="form-button">
+        </div>
+      </form>
+
+    </div>
+
+    <div class="w3-half">
+      <div class="w3-content w3-margin-left w3-margin-right"
+      style="background-attachment:scroll;background-position:0% 0%;font-family:Arial, Helvetica, sans-serif;font-size:19px">
+        <div class="box-element " >
+            <a href="{% url 'store:cart' %}" class="w3-btn w3-text-white w3-hover-text-cyan w3-round-large w3-margin"
+            style="background-color:#1877f2">&#x2190; Back to Cart</a>
+            <br>
+            <h3>Order Summary</h3>
+            <div class="cart-row">
+              <div style="flex:2">Product</div>
+					    <div style="flex:2"><p>Player Name</p></div>
+					    <div style="flex:1"><p>Price</p></div>
+					    <div style="flex:1"><p>Quantity</p></div>
+            </div>
+            {% for item in items %}
+            <div class="cart-row">
+              <div style="flex:2"><img class="row-image" src="{{item.product.imageURL}}"></div>
+					    <div style="flex:2"><p>{{item.product.name}}</p></div>
+					    <div style="flex:1"><p>&#8377;{{item.product.price}}</p></div>
+					    <div style="flex:1"><p>x{{item.quantity}}</p></div>
+            </div>
+            {% endfor %}
+            <h5>Item : {{order.get_cart_item}} </h5>
+            <h5>Total : &#8377; {{order.get_cart_total}}</h5>
+            {{order.shipping}}
+            <!--{{order.get_cart_total}}-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w3-row-padding w3-container w3-margin-top" style="margin-bottom:300px;font-family:Arial, Helvetica, sans-serif;font-size:19px">
+    <div class="w3-card-4 w3-round-large hidden w3-block w3-half w3-padding" id="payment-info" style="height:200px;">
+      <small class="w3-large w3-content">Paypal Option</small><br>
+      <!--<button type="button" name="button" class="w3-btn w3-green w3-round-xlarge w3-margin" id="make-payment">Make Payment</button>-->
+      <div class="w3-container w3-margin-top w3-margin-bottom" id="paypal-button-container" style="height:400px;">
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=AWBc6i14t0xWRsXQBP4hgTZQOK2dcphcW2MZ7Ly_qrYFdfe7t6p-VHhxE6CN5c2AGrTP2EEuw-UWmblf&currency=INR"></script>
+  <script>
+        var total = '{{order.get_cart_total}}'
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+            style:{
+              color:'blue',
+              shape:'rect',
+              height : 45
+
+            },
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: parseFloat(total).toFixed(2)
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    submitFormData()
+                });
+            }
+
+
+        }).render('#paypal-button-container');
+    </script>
+
+
+  <script type="text/javascript">
+    var shipping = '{{order.shipping}}'
+    console.log(shipping);
+
+    if (shipping === 'False'){
+      document.getElementById('shipping-info').innerHTML = ' '
+    }
+
+    if (user != 'AnonymousUser') {
+      document.getElementById('user-info').innerHTML = ' '
+      document.getElementById('user-info-hd').innerHTML = ''
+
+    }
+
+
+    if (shipping == 'False' && user != 'AnonymousUser'){
+
+      document.getElementById('form').classList.add("hidden")
+
+      document.getElementById('payment-info').classList.remove("hidden")
+    }
+
+    var form = document.getElementById('form')
+
+
+    form.addEventListener('submit',function(e){
+      e.preventDefault()
+      console.log("form submitted ....")
+      document.getElementById('form-button').classList.add('hidden')
+      document.getElementById('payment-info').classList.remove('hidden')
+    })
+    /*
+    document.getElementById('make-payment').addEventListener('click',function(e){
+      submitFormData()
+    })*/
+
+    function submitFormData(){
+      console.log("Payment Submitted")
+
+      var userFormData = {
+        'name':null,
+        'email':null,
+        'total':total
+      }
+
+      var shippingInfo = {
+        'address':null,
+        'state':null,
+        'city':null,
+        'pincode':null,
+      }
+
+      if (shipping == 'True') {
+        shippingInfo.address = form.address.value
+        shippingInfo.city = form.address.value
+        shippingInfo.state = form.state.value
+        shippingInfo.pincode = form.pincode.value
+      }
+
+      if (user == 'AnonymousUser') {
+        userFormData.name = form.name.value
+        userFormData.email = form.email.value
+        shippingInfo.address = form.address.value
+        shippingInfo.city = form.address.value
+        shippingInfo.state = form.state.value
+        shippingInfo.pincode = form.pincode.value
+      }
+
+
+      var url = '/process_order/'
+      fetch(url,{
+        method : 'POST',
+        headers : {
+          'Content-Type':'application/json',
+          'X-CSRFToken':csrftoken,
+        },
+        body : JSON.stringify({'form':userFormData , 'shipping':shippingInfo})
+      })
+
+      .then((response) => {
+        return response.json()
+      })
+
+      .then((data) => {
+        console.log('Success',data);
+        alert('Transaction Completed');
+
+        cart = {}
+        document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+
+        window.location.href = '{% url 'store:store' %}'
+
+      })
+    }
+
+  </script>
+  <div class="w3-container w3-hide-large">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  </div>
+
+{% include 'store/footer.html' %}
+{% endblock content %}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Shopify</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+                                        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Archivo Black' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script type="text/javascript">
+      var user = '{{request.user}}'
+      function getCookie(name) {
+          var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+          }
+      var csrftoken = getCookie('csrftoken');
+
+      function getCookie(name){
+        //Split cookie string and get all individual name=value pairs in an array
+        var cookieArr = document.cookie.split(";");
+
+        //Loop through the array elements
+        for(var i = 0; i < cookieArr.length; i++){
+          var cookiePair = cookieArr[i].split("=");
+
+          /* Removing whitespaces at the beginning of the cokie name
+          and compare it with the given string */
+          if (name == cookiePair[0].trim()){
+            //Decode the cokie value and return
+            return decodeURIComponent(cookiePair[1]);
+          }
+        }
+        //return null if not found
+        return null;
+      }
+
+      var cart = JSON.parse(getCookie('cart'))
+      if(cart == undefined){
+          cart = {}
+          console.log('Cart was created!')
+          document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+      }
+      console.log('Cart:',cart);
+    </script>
+
+  </head>
+  <body>
+  <div class="w3-content" style="max-width:2000px">
+    <div class="w3-bar w3-mobile w3-padding " style="background-color:#1877f2;font-family:Arial, Helvetica, sans-serif;font-size:22px">
+      <a href="{% url 'store:store' %}" class="w3-bar-item w3-btn w3-round w3-ripple w3-hover w3-text-white w3-hover-text-cyan">Shopify</a>
+      <!--<a href="{% url 'store:store' %}" class="w3-bar-item w3-btn w3-round w3-ripple w3-hover w3-text-white w3-hover-text-cyan w3-hide-small">Store</a>-->
+      <div class="w3-dropdown-hover">
+        <button class="w3-btn w3-round w3-ripple w3-hover w3-text-white w3-hover-text-cyan">Players <i class="fa fa-caret-down"></i> </button>
+        <div class="w3-dropdown-content w3-bar-block" style="background-color:#1877f2">
+          <a href="{% url 'store:player' 'cristiano' %}" class="w3-bar-item w3-btn w3-round w3-ripple w3-hover w3-hover-cyan w3-text-white w3-hover-text-white">Cristiano</a>
+          <a href="{% url 'store:player' 'messi' %}" class="w3-bar-item w3-btn w3-round w3-ripple w3-hover w3-hover-cyan w3-text-white w3-hover-text-white">Messi</a>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="w3-bar-item w3-btn w3-round-xlarge w3-xlagre w3-ripple w3-right w3-text-white w3-cyan w3-hide-large" onclick="myFunction()">&#9776;</a>
+      <div class="w3-margin-right w3-hide-medium">
+        <span id="cart-total" class="w3-right w3-hide-small w3-cyan w3-text-white">{{cartItems}}</span>
+        <a href="{% url 'store:cart' %}" class="w3-mobile w3-hide-small w3-right w3-ripple">
+          <img src="{% static 'images/cart1.png' %}" alt="CART" id="cart-icon" class="w3-hover">
+        </a>
+      </div>
+      {% if user.is_authenticated %}
+      <a href="{% url 'store:logout' %}" class="w3-btn w3-round-large w3-right w3-mobile w3-hide-small w3-hide-medium w3-hover w3-text-white w3-hover-text-cyan w3-ripple ">LOGOUT</a>
+      <!--<a href="#" class="w3-btn w3-right w3-mobile w3-round-large w3-hide-small
+      w3-hover w3-text-white w3-hover-text-cyan w3-ripple">{{user.username}}</a>-->
+      <a href="{% url 'store:myorders' user.customer.id %}" class="w3-btn w3-right w3-mobile w3-round-large w3-hide-small w3-hide-medium w3-hover w3-text-white w3-hover-text-cyan w3-ripple">My Orders</a>
+      {% else %}
+      <a href="{% url 'store:login' %}" class="w3-btn w3-round-large w3-right w3-mobile w3-hide-small w3-hide-medium w3-ripple w3-text-white w3-hover-text-cyan">Login</a>
+      {% endif %}
+      </div>
+    </div>
+    <div class="w3-side-bar w3-bar-block w3-hide  w3-hide-large" id="demo" style="background-color:#1877f2;font-family:Arial, Helvetica, sans-serif;font-size:22px;">
+      <a href="{% url 'store:store' %}" class="w3-bar-item w3-btn w3-text-cyan w3-hide-small w3-hide-medium w3-hover-text-white w3-ripple">Shopify</a>
+      <a href="{% url 'store:cart' %}" class="w3-bar-item w3-btn w3-text-cyan w3-round-large w3-hover-cyan w3-ripple w3-hover-text-white">
+        <span id="cart-small" class="w3-text-white w3-hover-text-black w3-hover-red">{{cartItems}}</span>
+        <img src="{% static 'images/cart1.png' %}" alt="CART" id="cart-small-icon" class="w3-xxlarge">
+      </a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'store:myorders' user.customer.id %}" class="w3-bar-item w3-btn w3-text-cyan w3-round-large w3-hover-text-white w3-hover-cyan w3-ripple">My Orders</a>
+      <a href="{% url 'store:logout' %}" class="w3-bar-item w3-btn w3-text-cyan w3-round-large w3-hover-text-white w3-hover-cyan w3-ripple ">Logout</a>
+      {% else %}
+      <a href="{% url 'store:login' %}" class="w3-bar-item w3-btn w3-text-cyan w3-round-large w3-hover-cyan w3-ripple w3-hover-text-white">Login</a>
+      {% endif %}
+    </div>
+
+
+
+  <div class="w3-container">
+    {% block content %}
+
+
+    {% endblock content %}
+  </div>
+</div>
+
+
+
+  <script>
+    function myFunction() {
+      var x = document.getElementById("demo");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+  </script>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+  </script>
+
+  <script type="text/javascript" src="{% static 'js/cart.js'  %}"></script>
+
+
+  </body>
+</html>

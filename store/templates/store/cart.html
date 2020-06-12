@@ -1,0 +1,77 @@
+{% extends "store/main.html" %}
+{% load static %}
+
+{% block content %}
+
+  <div class="w3-row w3-content w3-large w3-card-4 w3-mobile" style="margin-top:50px;margin-bottom:50px;font-family:Arial, Helvetica, sans-serif;font-size:19px">
+    <div class="w3-container w3-mobile w3-margin-top w3-margin-bottom">
+      <a href="{% url 'store:store' %}" class="w3-mobile w3-btn w3-round-large w3-text-white w3-margin-top w3-hover w3-hover-text-cyan"
+        style="background-color:#1877f2">&#x2190; Continue Shopping</a>
+    </div>
+    <table class="w3-table w3-mobile w3-margin-top w3-margin-bottom">
+      <tr>
+        <th><h5 class="w3-text-black">Items : <strong>{{order.get_cart_item}}</strong> </h5></th>
+        <th><h5 class="w3-text-black">Total : <strong>{{order.get_cart_total}}</strong> </h5></th>
+        <th>
+          <a href="{% url 'store:checkout' %}" class="w3-right w3-btn w3-round-large w3-text-white w3-hover w3-hover-text-cyan"
+            style="background-color:#1877f2">Checkout</a>
+        </th>
+      </tr>
+    </table>
+  </div>
+
+
+  <!--<div class="w3-row w3-container w3-card-4 w3-margin w3-mobile">
+      <div class="cart-row w3-padding w3-mobile">
+        <div class="w3-content w3-mobile" style="flex:1"></div>
+        <div class="w3-content w3-mobile" style="flex:1"><strong>Item</strong></div>
+        <div class="w3-content w3-mobile" style="flex:1"><strong>Price</strong></div>
+        <div class="w3-content w3-mobile" style="flex:1"><strong>Quantity</strong></div>
+        <div class="w3-content w3-mobile" style="flex:1"><strong>Total</strong></div>
+      </div>
+      {% for item in items %}
+      <div class="cart-row w3-padding w3-display-container w3-mobile">
+        <div class="w3-content w3-mobile" style="flex:1"><img src="{{item.product.imageURL}}" class="thumbnail-row" alt="placeholder"> </div>
+        <div class="content" style="flex:1"><strong>{{item.product.name}}</strong></div>
+        <div class="content" style="flex:1"><strong>$ {{item.product.price|floatformat:2}}</strong></div>
+        <div class="quan" style="flex:1">
+          <p class="quantity">{{item.quantity}}</p>
+          <div class="quantity">
+            <img data-product = {{item.product.id}} data-action = "add" src="{% static 'images/arrow-up.png' %}" alt="arrow-up" class="chg-quantity update-cart">
+            <img data-product = {{item.product.id}} data-action = "remove" src="{% static 'images/arrow-down.png' %}" alt="arrow-down" class="chg-quantity update-cart">
+          </div>
+        </div>
+        <div class="content" style="flex:1"><strong>$ {{item.get_total}}</strong></div>
+      </div>
+      {% endfor %}
+  </div>-->
+  <div class="w3-card-4 w3-mobile w3-content" style="margin-bottom:500px;font-family:Arial, Helvetica, sans-serif;font-size:19px">
+  {% for item in items %}
+  <div class="w3-row w3-display-container w3-mobile w3-padding ">
+    <div class="w3-col l3 s3 m3 w3-center"><strong>Display</strong></div>
+    <div class="w3-col l3 s3 m3 w3-center"><strong>Item</strong></div>
+    <div class="w3-col l2 s2 m2 w3-center"><strong>Price</strong></div>
+    <div class="w3-col l2 s2 m2 w3-center"><strong>Quantity</strong></div>
+    <div class="w3-col l2 s2 m2 w3-center"><strong>Total</strong></div>
+  </div>
+  <div class="w3-row-padding w3-display-container w3-mobile w3-padding">
+    <div class="w3-col l3 s3 m3"><img src="{{item.product.imageURL}}" class="thumbnail-row" alt="placeholder"></div>
+    <div class="w3-col l3 s3 m3 w3-center content"><strong>{{item.product.name}}</strong></div>
+    <div class="w3-col l2 s2 m2 w3-center content"><strong>&#8377;{{item.product.price|floatformat:2}}</strong></div>
+    <div class="w3-col l2 s2 m2 w3-center content">
+      <span class="quantity">{{item.quantity}}</span>
+      <div class="quantity">
+        <img data-product = {{item.product.id}} data-action = "add" src="{% static 'images/arrow-up.png' %}" alt="arrow-up" class="chg-quantity update-cart">
+        <img data-product = {{item.product.id}} data-action = "remove" src="{% static 'images/arrow-down.png' %}" alt="arrow-down" class="chg-quantity update-cart">
+      </div>
+    </div>
+    <div class="w3-col l2 s2 m2 w3-center content"><strong>&#8377;{{item.get_total}}</strong></div>
+  </div><br><hr>
+  {% endfor %}
+</div>
+<div class="w3-container w3-hide-large">
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  <br><br>
+</div>
+{% include 'store/footer.html' %}
+{% endblock content %}
